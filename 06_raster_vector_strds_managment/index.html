@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://mundialis.github.io/actinia-python-client/06_raster_vector_strds_managment/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Raster, Vector and STRDS Management - actinia-python-client</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Raster, Vector and STRDS Management";
+        var mkdocs_page_input_path = "06_raster_vector_strds_managment.md";
+        var mkdocs_page_url = "/actinia-python-client/06_raster_vector_strds_managment/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../docs/img/actinia_logo.svg" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">actinia-python-client</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../02_installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../03_quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../04_location_managment/">Location Management</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../05_mapset_managment/">Mapset Management</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="" href="../06_process_chain_validation.md">None</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="" href="../07_processing.md">None</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia-python-client</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Raster, Vector and STRDS Management</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="raster-vector-and-strds-management">Raster, Vector and STRDS Management</h1>
+<pre><code>from actinia import Actinia
+
+actinia_mundialis = Actinia()
+actinia_mundialis.get_version()
+actinia_mundialis.set_authentication(&quot;demouser&quot;, &quot;gu3st!pa55w0rd&quot;)
+
+# request all locations
+locations = actinia_mundialis.get_locations()
+# Get Mapsets of nc_spm_08 location
+mapsets = actinia_mundialis.locations[&quot;nc_spm_08&quot;].get_mapsets()
+</code></pre>
+<h2 id="raster-manangement">Raster manangement</h2>
+<p>Get all rasters of the <code>PERMANENT</code> mapsets</p>
+<pre><code>rasters = mapsets[&quot;PERMANENT&quot;].get_raster_layers()
+print(rasters.keys())
+</code></pre>
+<p>Get information of the raster <code>zipcodes</code></p>
+<pre><code>info = rasters[&quot;zipcodes&quot;].get_info()
+</code></pre>
+<p>Upload a GTif as raster layer to a user mapset (here the user mapset will be
+created before)</p>
+<pre><code># TODO add mapset creation
+mapset_name = &quot;test_mapset&quot;
+
+# upload tif
+raster_layer_name = &quot;test&quot;
+file = &quot;/home/testuser/data/elevation.tif&quot;
+locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].upload_raster(raster_layer_name, file)
+print(locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].raster_layers.keys())
+</code></pre>
+<p>Delete a raster layer</p>
+<pre><code>locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].delete_raster(raster_layer_name)
+print(locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].raster_layers.keys())
+
+# TODO delete mapset
+</code></pre>
+<h2 id="vector-management">Vector management</h2>
+<p>Get all vector maps of the <code>PERMANENT</code> mapsets</p>
+<pre><code>vectors = mapsets[&quot;PERMANENT&quot;].get_vector_layers()
+print(vectors.keys())
+</code></pre>
+<p>Get information of the vector <code>boundary_county</code></p>
+<pre><code>info = vectors[&quot;boundary_county&quot;].get_info()
+</code></pre>
+<p>Upload a GeoJSON as vector layer to a user mapset (here the user mapset will
+be created before)</p>
+<pre><code># TODO add mapset creation
+mapset_name = &quot;test_mapset&quot;
+
+# upload tif
+vector_layer_name = &quot;test&quot;
+file = &quot;/home/testuser/data/firestations.geojson&quot;
+locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].upload_vector(vector_layer_name, file)
+print(locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].vector_layers.keys())
+</code></pre>
+<p>Delete a raster layer</p>
+<pre><code>locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].delete_vector(vector_layer_name)
+print(locations[&quot;nc_spm_08&quot;].mapsets[mapset_name].vector_layers.keys())
+
+# TODO delete mapset
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
